@@ -1,0 +1,44 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authdb  # Thay đổi tên database và thông tin kết nối
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    open-in-view: false
+  security:
+    user:
+      name: admin
+      password: admin  # Thay đổi tên và mật khẩu mặc định của người dùng
+    jwt:
+      secret-key: e3A/W8OwSH74/fLeT3Tsw7vsuDaVeOoG6BaLVldXkm1SCDsjR0AM9MXrLiWpjEQlmwsUcQ8Cd84kJr+okIJXww==
+      expiration-time: 3600  # Thời gian hết hạn của JWT (tính bằng giây)
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    com.corebanking: DEBUG
+
+
+# Các cài đặt khác nếu cần
+application:
+  name: auth-service
