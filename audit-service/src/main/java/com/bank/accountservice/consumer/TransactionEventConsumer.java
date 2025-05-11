@@ -49,10 +49,4 @@ public class TransactionEventConsumer {
         auditLogService.save(event.getType(), "system", message);
     }
 
-    @KafkaListener(topics = "transaction-events.DLT", groupId = "audit-dlt")
-    public void handleDlt(String message) {
-        log.warn("📦 Message sent to DLT: {}", message);
-        // todo alert
-    }
-
 }

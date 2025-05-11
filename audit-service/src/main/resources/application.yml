@@ -1,24 +1,21 @@
 server:
-  port: 8084
+  port: 8085
 
 spring:
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: audit-service
-      auto-offset-reset: earliest
   datasource:
-    url: jdbc:postgresql://localhost:5432/auditdb  # Thay đổi tên database và thông tin kết nối
+    url: jdbc:postgresql://localhost:5432/auditdb
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
-    open-in-view: false
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer

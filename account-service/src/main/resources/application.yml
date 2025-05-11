@@ -15,16 +15,7 @@ spring:
       hibernate:
         format_sql: true
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     producer:
-      retries: 5                # Số lần retry nếu gửi lỗi
-      acks: all                 # Yêu cầu xác nhận từ tất cả broker replica
-      delivery-timeout-ms: 120000
-      request-timeout-ms: 30000
-      retry-backoff-ms: 2000
-    consumer:
-      group-id: account-service
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    listener:
-      missing-topics-fatal: false
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
