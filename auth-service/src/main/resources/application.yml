@@ -25,7 +25,7 @@ spring:
       secret-key: e3A/W8OwSH74/fLeT3Tsw7vsuDaVeOoG6BaLVldXkm1SCDsjR0AM9MXrLiWpjEQlmwsUcQ8Cd84kJr+okIJXww==
       expiration-time: 3600  # Thời gian hết hạn của JWT (tính bằng giây)
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
