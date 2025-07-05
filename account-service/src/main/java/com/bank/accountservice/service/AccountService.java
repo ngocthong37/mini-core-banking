@@ -3,8 +3,10 @@ package com.bank.accountservice.service;
 import com.bank.accountservice.dto.CreateAccountRequest;
 import com.bank.accountservice.dto.TransactionRequest;
 import com.bank.accountservice.dto.TransferRequest;
+import com.bank.accountservice.dto.UserResponse;
 import com.bank.accountservice.entity.Account;
 import com.bank.accountservice.repository.AccountRepository;
+import com.bank.accountservice.repository.httpclient.UserClient;
 import com.bank.common.event.TransactionEvent;
 import com.bank.common.event.TransferEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -24,10 +27,11 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final UserClient userClient;
 
     public Account createAccount(CreateAccountRequest request) {
         Account account = new Account();
-        account.setUserId(request.getCustomerId());
+        account.setUserId(request.getUserId());
         account.setAccountType(request.getAccountType());
         account.setBalance(0.0);
         account.setIsActive(true);
@@ -39,8 +43,9 @@ public class AccountService {
     public Account deposit(TransactionRequest request) {
         Account acc = accountRepository.findByAccountNumber(request.getAccountNumber()).orElseThrow();
         acc.setBalance(acc.getBalance() + request.getAmount());
+        UserResponse userResponse = userClient.getUserProfile(acc.getUserId()).getResult();
         TransactionEvent event = new TransactionEvent(
-                "DEPOSIT", request.getAccountNumber(), request.getAmount(), LocalDateTime.now()
+                UUID.randomUUID().toString(), "DEPOSIT", request.getAccountNumber(), request.getAmount(), LocalDateTime.now(), userResponse.getUsername()
         );
 
         try {
@@ -60,8 +65,11 @@ public class AccountService {
         }
         acc.setBalance(acc.getBalance() - request.getAmount());
 
+        UserResponse userResponse = userClient.getUserProfile(acc.getUserId()).getResult();
+
         TransactionEvent event = new TransactionEvent(
-                "WITHDRAW", request.getAccountNumber(), request.getAmount(), LocalDateTime.now()
+                UUID.randomUUID().toString(), "WITHDRAW", request.getAccountNumber(), request.getAmount(), LocalDateTime.now(),
+                userResponse.getUsername()
         );
 
         try {
@@ -91,7 +99,7 @@ public class AccountService {
         return accountRepository.findById(id).orElseThrow();
     }
 
-    public List<Account> getAccountsByCustomer(Long customerId) {
+    public List<Account> getAccountsByCustomer(UUID customerId) {
         return accountRepository.findByUserId(customerId);
     }
 

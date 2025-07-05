@@ -11,8 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionEvent {
+    private String transactionId;
     private String type;
     private String accountNumber;
     private Double amount;
     private LocalDateTime timestamp;
+    private String userName;
 }

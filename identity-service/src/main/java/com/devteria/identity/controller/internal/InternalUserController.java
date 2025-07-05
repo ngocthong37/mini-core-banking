@@ -1,4 +1,4 @@
-package com.devteria.identity.controller;
+package com.devteria.identity.controller.internal;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,11 +19,11 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/internal/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-public class UserController {
+public class InternalUserController {
     UserService userService;
 
     @PostMapping("/registration")

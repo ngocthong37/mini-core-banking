@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/audit-service/core-banking-system.audit-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/audit-service/core-banking-system.audit-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/common-service/core-banking-system.common-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common-service/core-banking-system.common-service.main.iml" />

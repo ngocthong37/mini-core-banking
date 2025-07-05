@@ -30,7 +30,7 @@ public class TransactionEventConsumer {
             TransactionEvent event = objectMapper.readValue(message, TransactionEvent.class);
             log.info("📥 Received transaction Event: {}", event);
 
-            auditLogService.save(event.getType(), "system", message);
+            auditLogService.save(event.getType(), event.getUserName(), message);
 
         } catch (Exception e) {
             log.error("❌ Failed to process transaction event", e);

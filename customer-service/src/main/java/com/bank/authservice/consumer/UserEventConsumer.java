@@ -17,20 +17,16 @@ public class UserEventConsumer {
     private final ObjectMapper objectMapper;
     private final CustomerRepository customerRepository;
 
-    @KafkaListener(topics = "user-events", groupId = "customer-service")
+    @KafkaListener(topics = "user-registered", groupId = "customer-service")
     public void handleUserCreatedEvent(String message) {
         try {
             UserCreatedEvent event = objectMapper.readValue(message, UserCreatedEvent.class);
             log.info("Received event from Kafka: {}", event);
-//
-//            if (!"CUSTOMER".equalsIgnoreCase(event.getRole())) {
-//                log.info("Ignored event because role is not CUSTOMER: {}", event.getRole());
-//                return;
-//            }
-
             Customer customer = new Customer();
             customer.setFullName(event.getUsername());
+            customer.setEmail(event.getEmail());
             customer.setCreatedAt(event.getCreatedAt());
+            customer.setUpdatedAt(event.getCreatedAt());
 
             customerRepository.save(customer);
             log.info("Created customer for user {}", event.getUsername());

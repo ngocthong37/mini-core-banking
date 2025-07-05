@@ -1,8 +1,11 @@
 package com.devteria.identity.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
+import com.devteria.event.dto.UserCreatedEvent;
 import com.devteria.identity.entity.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -40,7 +43,6 @@ public class UserService {
     UserMapper userMapper;
     ProfileMapper profileMapper;
     PasswordEncoder passwordEncoder;
-    ProfileClient profileClient;
     KafkaTemplate<String, Object> kafkaTemplate;
 
     public UserResponse createUser(UserCreationRequest request) {
@@ -52,6 +54,7 @@ public class UserService {
 
         user.setRoles(roles);
         user.setEmailVerified(false);
+        user.setEmail(request.getEmail());
 
         try {
             user = userRepository.save(user);
@@ -62,17 +65,15 @@ public class UserService {
         var profileRequest = profileMapper.toProfileCreationRequest(request);
         profileRequest.setUserId(user.getId().toString());
 
-//        var profile = profileClient.createProfile(profileRequest);
 
-//        NotificationEvent notificationEvent = NotificationEvent.builder()
-//                .channel("EMAIL")
-//                .recipient(request.getEmail())
-//                .subject("Welcome to bookteria")
-//                .body("Hello, " + request.getUsername())
-//                .build();
+        UserCreatedEvent event = new UserCreatedEvent(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                new Date()
+        );
 
-        // Publish message to kafka
-//        kafkaTemplate.send("notification-delivery", notificationEvent);
+        kafkaTemplate.send("user-registered", event);
 
         var userCreationReponse = userMapper.toUserResponse(user);
         userCreationReponse.setId(user.getId().toString());
@@ -92,7 +93,7 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -105,7 +106,7 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String userId) {
-        userRepository.deleteById(userId);
+        userRepository.deleteById(UUID.fromString(userId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -114,9 +115,8 @@ public class UserService {
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    public UserResponse getUser(String id) {
+    public UserResponse getUser(UUID userId) {
         return userMapper.toUserResponse(
-                userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
+                userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
 }
