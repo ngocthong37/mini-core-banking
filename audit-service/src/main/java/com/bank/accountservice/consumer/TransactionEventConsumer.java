@@ -22,7 +22,7 @@ public class TransactionEventConsumer {
     @KafkaListener(topics = "transaction-events", groupId = "audit-service")
     @Retryable(
             value = {Exception.class},
-            maxAttempts = 3,
+            maxAttempts = 5,
             backoff = @Backoff(delay = 2000, multiplier = 2)
     )
     public void transactionEvent(String message) {
@@ -40,7 +40,7 @@ public class TransactionEventConsumer {
     @KafkaListener(topics = "transfer-events", groupId = "audit-service")
     @Retryable(
             value = {Exception.class},
-            maxAttempts = 3,
+            maxAttempts = 5,
             backoff = @Backoff(delay = 2000, multiplier = 2)
     )
     public void transferEvent(String message) throws JsonProcessingException {

@@ -13,5 +13,4 @@ public class CustomerRequest {
     private String email;
     private LocalDate dateOfBirth;
     private String address;
-
 }

@@ -6,12 +6,13 @@ import com.bank.accountservice.dto.TransferRequest;
 import com.bank.accountservice.entity.Account;
 import com.bank.accountservice.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("accounts")
 @RequiredArgsConstructor
 public class AccountController {
 
@@ -42,6 +43,7 @@ public class AccountController {
         return accountService.withdraw(request);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/transfer")
     public void transfer(@RequestBody TransferRequest request) {
         accountService.transfer(request);

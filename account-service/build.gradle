@@ -15,6 +15,9 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.37.3'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

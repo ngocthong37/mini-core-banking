@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/account-service/core-banking-system.account-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/audit-service/core-banking-system.audit-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/audit-service/core-banking-system.audit-service.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/auth-service/core-banking-system.auth-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auth-service/core-banking-system.auth-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/common-service/core-banking-system.common-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common-service/core-banking-system.common-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customer-service/core-banking-system.customer-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/customer-service/core-banking-system.customer-service.main.iml" />
     </modules>

@@ -22,11 +22,11 @@ public class UserEventConsumer {
         try {
             UserCreatedEvent event = objectMapper.readValue(message, UserCreatedEvent.class);
             log.info("Received event from Kafka: {}", event);
-
-            if (!"CUSTOMER".equalsIgnoreCase(event.getRole())) {
-                log.info("Ignored event because role is not CUSTOMER: {}", event.getRole());
-                return;
-            }
+//
+//            if (!"CUSTOMER".equalsIgnoreCase(event.getRole())) {
+//                log.info("Ignored event because role is not CUSTOMER: {}", event.getRole());
+//                return;
+//            }
 
             Customer customer = new Customer();
             customer.setFullName(event.getUsername());
