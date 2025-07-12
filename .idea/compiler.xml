@@ -11,6 +11,7 @@
         <module name="core-banking-system.account-service.main" />
         <module name="core-banking-system.audit-service.main" />
         <module name="core-banking-system.customer-service.main" />
+        <module name="core-banking-system.notification-service.main" />
         <module name="core-banking-system.common-service.main" />
       </profile>
       <profile name="Maven default annotation processors profile" enabled="true">

@@ -1,0 +1,31 @@
+server:
+  port: 8083
+
+app:
+  services:
+    identity: http://localhost:8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/accountdb
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+    security:
+      jwt:
+        secret-key: e3A/W8OwSH74/fLeT3Tsw7vsuDaVeOoG6BaLVldXkm1SCDsjR0AM9MXrLiWpjEQlmwsUcQ8Cd84kJr+okIJXww==
+        expiration-time: 3600  # Thời gian hết hạn của JWT (tính bằng giây)
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: account-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

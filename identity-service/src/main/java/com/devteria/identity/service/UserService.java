@@ -1,10 +1,8 @@
 package com.devteria.identity.service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import com.devteria.event.dto.NotificationEvent;
 import com.devteria.event.dto.UserCreatedEvent;
 import com.devteria.identity.entity.User;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.devteria.event.dto.NotificationEvent;
 import com.devteria.identity.constant.PredefinedRole;
 import com.devteria.identity.dto.request.UserCreationRequest;
 import com.devteria.identity.dto.request.UserUpdateRequest;
@@ -26,7 +23,6 @@ import com.devteria.identity.mapper.ProfileMapper;
 import com.devteria.identity.mapper.UserMapper;
 import com.devteria.identity.repository.RoleRepository;
 import com.devteria.identity.repository.UserRepository;
-import com.devteria.identity.repository.httpclient.ProfileClient;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -74,6 +70,20 @@ public class UserService {
         );
 
         kafkaTemplate.send("user-registered", event);
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("username", user.getUsername());
+        model.put("email", user.getEmail());
+        model.put("verificationLink", "https://your-app.com/verify?token=someTokenHere");
+
+        NotificationEvent notificationEvent = new NotificationEvent(
+                user.getEmail(),
+                null,
+                "Chào mừng bạn đến với hệ thống của chúng tôi!",
+                model
+        );
+
+        kafkaTemplate.send("send-notification", notificationEvent);
 
         var userCreationReponse = userMapper.toUserResponse(user);
         userCreationReponse.setId(user.getId().toString());
