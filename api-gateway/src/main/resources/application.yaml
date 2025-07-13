@@ -9,9 +9,6 @@ spring:
     name: api-gateway
 
   cloud:
-    discovery:
-      enabled: true
-
     gateway:
       routes:
         - id: customer-service
@@ -49,9 +46,14 @@ spring:
           filters:
             - StripPrefix=1
 
-  eureka:
-    client:
-      service-url:
-        defaultZone: http://localhost:8761/eureka
-      register-with-eureka: true
-      fetch-registry: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
