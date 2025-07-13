@@ -16,6 +16,8 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.37.3'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
     implementation project(':common-service')
     runtimeOnly 'org.postgresql:postgresql'
 
@@ -23,3 +25,14 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.1"
+    }
+}
+
+bootRun {
+    jvmArgs = ['-Dspring.cloud.client.hostname=localhost']
+}
+

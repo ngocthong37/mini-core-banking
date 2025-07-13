@@ -7,36 +7,51 @@ app:
 spring:
   application:
     name: api-gateway
+
   cloud:
+    discovery:
+      enabled: true
+
     gateway:
       routes:
         - id: customer-service
-          uri: http://localhost:8081
+          uri: lb://customer-service
           predicates:
-          - Path=${app.api-prefix}/customers/**
+            - Path=${app.api-prefix}/customers/**
           filters:
-          - StripPrefix=1
+            - StripPrefix=1
+
         - id: account-service
-          uri: http://localhost:8083
+          uri: lb://account-service
           predicates:
-          - Path=${app.api-prefix}/accounts/**
+            - Path=${app.api-prefix}/accounts/**
           filters:
-          - StripPrefix=1
+            - StripPrefix=1
+
         - id: audit-service
-          uri: http://localhost:8085
+          uri: lb://audit-service
           predicates:
             - Path=${app.api-prefix}/audit-logs/**
           filters:
             - StripPrefix=1
-        - id: auth-service
-          uri: http://localhost:8082
+
+        - id: identity-service
+          uri: lb://identity-service
           predicates:
             - Path=${app.api-prefix}/identity/**
           filters:
             - StripPrefix=1
-        - id: file_service
-          uri: http://localhost:8084
+
+        - id: file-service
+          uri: lb://file-service
           predicates:
             - Path=${app.api-prefix}/file/**
           filters:
             - StripPrefix=1
+
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka
+      register-with-eureka: true
+      fetch-registry: true

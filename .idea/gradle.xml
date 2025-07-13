@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/customer-service" />
             <option value="$PROJECT_DIR$/identity-service" />
             <option value="$PROJECT_DIR$/notification-service" />
+            <option value="$PROJECT_DIR$/service-registry" />
             <option value="$PROJECT_DIR$/transaction-service" />
           </set>
         </option>

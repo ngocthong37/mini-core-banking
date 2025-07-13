@@ -2,6 +2,8 @@ server:
   port: 8085
 
 spring:
+  application:
+    name: audit-service  # 💡 rất quan trọng: tên service (dùng để discover)
   datasource:
     url: jdbc:postgresql://localhost:5432/auditdb
     username: user
@@ -19,3 +21,14 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}

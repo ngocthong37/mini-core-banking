@@ -5,7 +5,8 @@ server:
 
 spring:
   application:
-    name: identity-service
+    name: identity-service  # 💡 rất quan trọng: tên service (dùng để discover)
+
   datasource:
     url: jdbc:postgresql://localhost:5432/identitydb
     driverClassName: org.postgresql.Driver
@@ -28,3 +29,15 @@ jwt:
 app:
   services:
     profile: http://localhost:8081/profile
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
