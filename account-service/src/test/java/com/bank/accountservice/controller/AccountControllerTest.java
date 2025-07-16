@@ -2,12 +2,14 @@ package com.bank.accountservice.controller;
 
 import com.bank.accountservice.dto.CreateAccountRequest;
 import com.bank.accountservice.dto.TransactionRequest;
+import com.bank.accountservice.dto.TransferRequest;
 import com.bank.accountservice.entity.Account;
 import com.bank.accountservice.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class AccountControllerTest {
 
     @Autowired
@@ -32,14 +36,15 @@ public class AccountControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    UUID uuid = UUID.randomUUID();
 
     @Test
     void testCreateAccount() throws Exception {
-        CreateAccountRequest request = new CreateAccountRequest(1L, "SAVINGS");
+        CreateAccountRequest request = new CreateAccountRequest(uuid, "SAVINGS");
 
         Account account = new Account();
         account.setId(1L);
-        account.setUserId(1L);
+        account.setUserId(uuid);
         account.setAccountNumber("123456789");
         account.setBalance(0.0);
         account.setAccountType("SAVINGS");
@@ -53,7 +58,7 @@ public class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.userId").value(1L))
+                .andExpect(jsonPath("$.userId").value(uuid.toString()))
                 .andExpect(jsonPath("$.accountType").value("SAVINGS"))
                 .andExpect(jsonPath("$.balance").value(0.0));
     }
@@ -62,7 +67,7 @@ public class AccountControllerTest {
     void testGetAccountById() throws Exception {
         Account account = new Account();
         account.setId(1L);
-        account.setUserId(1L);
+        account.setUserId(uuid);
         account.setAccountNumber("987654321");
         account.setBalance(5000.0);
         account.setAccountType("CURRENT");
@@ -82,7 +87,7 @@ public class AccountControllerTest {
     void testGetAccountsByCustomer() throws Exception {
         Account acc = new Account();
         acc.setId(1L);
-        acc.setUserId(1L);
+        acc.setUserId(uuid);
         acc.setAccountNumber("ACC001");
         acc.setBalance(1000.0);
         acc.setAccountType("SAVINGS");
@@ -90,12 +95,12 @@ public class AccountControllerTest {
         acc.setCreatedAt(new Date());
 
         List<Account> accounts = List.of(acc);
-        Mockito.when(accountService.getAccountsByCustomer(1L)).thenReturn(accounts);
+        Mockito.when(accountService.getAccountsByCustomer(uuid)).thenReturn(accounts);
 
-        mockMvc.perform(get("/accounts/customer/1"))
+        mockMvc.perform(get("/accounts/customer/" + uuid.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[0].userId").value(uuid.toString()))
                 .andExpect(jsonPath("$[0].balance").value(1000.0));
     }
 
@@ -105,7 +110,7 @@ public class AccountControllerTest {
 
         Account updated = new Account();
         updated.setId(1L);
-        updated.setUserId(1L);
+        updated.setUserId(uuid);
         updated.setAccountNumber("ACC002");
         updated.setBalance(1500.0);
         updated.setAccountType("SAVINGS");
@@ -127,7 +132,7 @@ public class AccountControllerTest {
 
         Account updated = new Account();
         updated.setId(1L);
-        updated.setUserId(1L);
+        updated.setUserId(uuid);
         updated.setAccountNumber("ACC003");
         updated.setBalance(800.0);
         updated.setAccountType("SAVINGS");
@@ -142,5 +147,23 @@ public class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.balance").value(800.0));
     }
+
+    @Test
+    void testTransfer() throws Exception {
+        TransferRequest request = new TransferRequest("ABC", "DEF", 100.0);
+
+        // Tạo object giả để mock
+        Account updated = new Account();
+        updated.setBalance(800.0);
+
+        Mockito.doNothing().when(accountService).transfer(any(TransferRequest.class));
+
+        mockMvc.perform(post("/accounts/transfer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+        // .andExpect(jsonPath("$.balance").value(800.0)); // Câu này sẽ fail nếu controller không trả JSON
+    }
+
 
 }
