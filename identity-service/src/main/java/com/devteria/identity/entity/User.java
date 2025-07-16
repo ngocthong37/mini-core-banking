@@ -22,12 +22,10 @@ public class User {
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     UUID id;
 
-    @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String username;
 
     String password;
 
-    @Column(name = "email", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String email;
 
     @Column(name = "email_verified", nullable = false, columnDefinition = "boolean default false")
@@ -36,9 +34,10 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "users_roles",
-            joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id", columnDefinition = "uuid"),
+            joinColumns = @JoinColumn(name = "users_id", columnDefinition = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "roles_id")
     )
     Set<Role> roles;
+
 
 }

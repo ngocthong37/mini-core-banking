@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # Dùng đúng file jar được tạo bởi bootJar

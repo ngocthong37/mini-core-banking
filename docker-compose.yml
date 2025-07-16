@@ -1,6 +1,29 @@
 version: '3.8'
 
 services:
+  # ✅ Eureka Service Registry
+  service-registry:
+    build:
+      context: ./service-registry
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - banking-network
+
+  # ✅ API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    depends_on:
+      - service-registry
+    networks:
+      - banking-network
+
+  # ✅ Account Service
   account-service:
     build:
       context: ./account-service
@@ -13,12 +36,14 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
     depends_on:
       postgres-db:
         condition: service_healthy
     networks:
       - banking-network
 
+  # ✅ Customer Service
   customer-service:
     build:
       context: ./customer-service
@@ -31,12 +56,14 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
     depends_on:
       postgres-db:
         condition: service_healthy
     networks:
       - banking-network
 
+  # ✅ Audit Service
   audit-service:
     build:
       context: ./audit-service
@@ -49,30 +76,34 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
     depends_on:
       postgres-db:
         condition: service_healthy
     networks:
       - banking-network
 
+  # ✅ Identity/Auth Service
   auth-service:
     build:
-      context: ./auth-service
+      context: ./identity-service
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/authdb
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/identitydb
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
     depends_on:
       postgres-db:
         condition: service_healthy
     networks:
       - banking-network
 
+  # ✅ PostgreSQL
   postgres-db:
     image: postgres:15
     environment:
@@ -92,6 +123,7 @@ services:
     networks:
       - banking-network
 
+  # ✅ Zookeeper
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -101,6 +133,7 @@ services:
     networks:
       - banking-network
 
+  # ✅ Kafka
   kafka:
     image: confluentinc/cp-kafka:7.0.1
     container_name: kafka

@@ -6,16 +6,18 @@ server:
 spring:
   application:
     name: identity-service  # 💡 rất quan trọng: tên service (dùng để discover)
-
   datasource:
     url: jdbc:postgresql://localhost:5432/identitydb
-    driverClassName: org.postgresql.Driver
     username: user
     password: password
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -33,7 +35,7 @@ app:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
     register-with-eureka: true
     fetch-registry: true
 

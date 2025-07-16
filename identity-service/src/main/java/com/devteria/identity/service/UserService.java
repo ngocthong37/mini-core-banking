@@ -60,8 +60,6 @@ public class UserService {
 
         var profileRequest = profileMapper.toProfileCreationRequest(request);
         profileRequest.setUserId(user.getId().toString());
-
-
         UserCreatedEvent event = new UserCreatedEvent(
                 user.getId(),
                 user.getUsername(),
@@ -85,10 +83,10 @@ public class UserService {
 
         kafkaTemplate.send("send-notification", notificationEvent);
 
-        var userCreationReponse = userMapper.toUserResponse(user);
-        userCreationReponse.setId(user.getId().toString());
+        var userCreationResponse = userMapper.toUserResponse(user);
+        userCreationResponse.setId(user.getId().toString());
 
-        return userCreationReponse;
+        return userCreationResponse;
     }
 
     public UserResponse getMyInfo() {
