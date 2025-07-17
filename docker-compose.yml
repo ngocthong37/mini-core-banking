@@ -20,6 +20,8 @@ services:
       - "8888:8888"
     depends_on:
       - service-registry
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
     networks:
       - banking-network
 
@@ -63,7 +65,7 @@ services:
     networks:
       - banking-network
 
-  # ✅ Audit Service
+#   ✅ Audit Service
   audit-service:
     build:
       context: ./audit-service
@@ -83,8 +85,27 @@ services:
     networks:
       - banking-network
 
-  # ✅ Identity/Auth Service
-  auth-service:
+  # ✅ Customer Service
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/accountdb
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - banking-network
+#   ✅ Identity/Auth Service
+  identity-service:
     build:
       context: ./identity-service
       dockerfile: Dockerfile
@@ -140,7 +161,7 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
@@ -153,6 +174,7 @@ services:
       - zookeeper
     networks:
       - banking-network
+
 
 networks:
   banking-network:

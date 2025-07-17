@@ -20,7 +20,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: customer-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -36,5 +36,4 @@ eureka:
 
   instance:
     prefer-ip-address: true
-    ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}

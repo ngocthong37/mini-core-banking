@@ -2,7 +2,6 @@ package com.devteria.identity.configuration;
 
 import java.util.HashSet;
 
-import com.devteria.identity.entity.User;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.devteria.identity.constant.PredefinedRole;
 import com.devteria.identity.entity.Role;
+import com.devteria.identity.entity.User;
 import com.devteria.identity.repository.RoleRepository;
 import com.devteria.identity.repository.UserRepository;
 

@@ -3,7 +3,7 @@ server:
 
 app:
   services:
-    identity: http://localhost:8082
+    identity: http://identity-service:8082
 
 spring:
   application:
@@ -29,7 +29,7 @@ spring:
       expiration-time: 3600
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: account-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -44,7 +44,6 @@ eureka:
 
   instance:
     prefer-ip-address: true
-    ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}
 
 resilience4j:

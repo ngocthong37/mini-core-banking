@@ -3,7 +3,7 @@ server:
 
 app:
   services:
-    identity: http://localhost:8082
+    identity: http://identity-service:8082
 
 spring:
   application:
@@ -26,7 +26,7 @@ spring:
         secret-key: e3A/W8OwSH74/fLeT3Tsw7vsuDaVeOoG6BaLVldXkm1SCDsjR0AM9MXrLiWpjEQlmwsUcQ8Cd84kJr+okIJXww==
         expiration-time: 3600  # Thời gian hết hạn của JWT (tính bằng giây)
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: notification-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -53,5 +53,4 @@ eureka:
 
   instance:
     prefer-ip-address: true
-    ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}

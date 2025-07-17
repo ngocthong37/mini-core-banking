@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 # Dùng đúng file jar được tạo bởi bootJar
