@@ -21,6 +21,9 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: audit-service
+      auto-offset-reset: earliest
 eureka:
   client:
     service-url:
