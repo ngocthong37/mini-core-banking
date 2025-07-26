@@ -82,7 +82,10 @@ public class AuthenticationService {
 
         var token = generateToken(user);
 
-        return AuthenticationResponse.builder().token(token).build();
+        return AuthenticationResponse.builder()
+                .token(token)
+                .userName(user.getUsername())
+                .build();
     }
 
     public void logout(LogoutRequest request) throws ParseException, JOSEException {

@@ -1,8 +1,6 @@
 package com.bank.accountservice.controller;
 
-import com.bank.accountservice.dto.CreateAccountRequest;
-import com.bank.accountservice.dto.TransactionRequest;
-import com.bank.accountservice.dto.TransferRequest;
+import com.bank.accountservice.dto.*;
 import com.bank.accountservice.entity.Account;
 import com.bank.accountservice.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +48,15 @@ public class AccountController {
     @PostMapping("/transfer")
     public void transfer(@RequestBody TransferRequest request) {
         accountService.transfer(request);
+    }
+
+    @GetMapping("/get-all")
+    public ApiResponse<List<AccountResponse>> getAllAccount() {
+        List<AccountResponse> data =  accountService.getAllAccount();
+        return ApiResponse.<List<AccountResponse>>builder()
+                .code(1000)
+                .message("Success")
+                .result(data)
+                .build();
     }
 }

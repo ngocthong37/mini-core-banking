@@ -1,9 +1,6 @@
 package com.bank.accountservice.service;
 
-import com.bank.accountservice.dto.CreateAccountRequest;
-import com.bank.accountservice.dto.TransactionRequest;
-import com.bank.accountservice.dto.TransferRequest;
-import com.bank.accountservice.dto.UserResponse;
+import com.bank.accountservice.dto.*;
 import com.bank.accountservice.entity.Account;
 import com.bank.accountservice.repository.AccountRepository;
 import com.bank.accountservice.repository.httpclient.UserClient;
@@ -12,7 +9,6 @@ import com.bank.common.event.TransferEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,5 +109,25 @@ public class AccountService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<AccountResponse> getAllAccount() {
+        List<Account> accounts = accountRepository.findAll();
+        return accounts.stream()
+                .map(
+                    acc -> {
+                        UserResponse userResponse = userClient.getUserProfile(acc.getUserId()).getResult();
+                        return AccountResponse.builder()
+                                .id(acc.getId())
+                                .accountNumber(acc.getAccountNumber())
+                                .balance(acc.getBalance())
+                                .accountType(acc.getAccountType())
+                                .isActive(acc.getIsActive())
+                                .createdAt(acc.getCreatedAt())
+                                .userName(userResponse.getUsername()) // hoặc .getUsername() tuỳ theo User model
+                                .build();
+                    }
+
+                ).toList();
     }
 }
